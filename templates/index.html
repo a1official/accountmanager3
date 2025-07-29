@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bulk Account Manager</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    :root {
+      --primary: #4a6cf7;
+      --secondary: #6c757d;
+      --success: #28a745;
+      --danger: #dc3545;
+      --warning: #ffc107;
+      --info: #17a2b8;
+      --light: #f8f9fa;
+      --dark: #343a40;
+      --white: #ffffff;
+      --body-bg: #f5f7fa;
+      --card-bg: #ffffff;
+      --border-color: #e9ecef;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --radius: 8px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: var(--body-bg);
+      color: var(--dark);
+      line-height: 1.6;
+      padding: 0;
+      margin: 0;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .header {
+      background-color: var(--white);
+      box-shadow: var(--shadow);
+      padding: 15px 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .logo i {
+      margin-right: 10px;
+      font-size: 28px;
+    }
+
+    .nav-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 16px;
+      border-radius: var(--radius);
+      font-weight: 500;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: none;
+      outline: none;
+    }
+
+    .btn i {
+      margin-right: 8px;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: var(--white);
+    }
+
+    .btn-success {
+      background-color: var(--success);
+      color: var(--white);
+    }
+
+    .btn-danger {
+      background-color: var(--danger);
+      color: var(--white);
+    }
+
+    .btn-warning {
+      background-color: var(--warning);
+      color: var(--dark);
+    }
+
+    .btn-info {
+      background-color: var(--info);
+      color: var(--white);
+    }
+
+    .btn:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+    }
+
+    .section {
+      margin: 30px 0;
+    }
+
+    .section-title {
+      font-size: 20px;
+      font-weight: 500;
+      margin-bottom: 20px;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+    }
+
+    .section-title i {
+      margin-right: 10px;
+      color: var(--primary);
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .card:hover {
+      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .server-card {
+      margin-bottom: 25px;
+    }
+
+    .server-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .server-title {
+      display: flex;
+      align-items: center;
+      font-size: 18px;
+      font-weight: 500;
+    }
+
+    .server-title i {
+      margin-right: 10px;
+      color: var(--primary);
+    }
+
+    .server-info {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .server-info span {
+      display: flex;
+      align-items: center;
+      font-size: 14px;
+      color: var(--secondary);
+    }
+
+    .server-info span i {
+      margin-right: 5px;
+    }
+
+    .account-list {
+      max-height: 300px;
+      overflow-y: auto;
+      padding: 10px;
+      border-radius: var(--radius);
+      background-color: var(--light);
+    }
+
+    .account-item {
+      display: flex;
+      align-items: center;
+      padding: 8px 10px;
+      border-radius: var(--radius);
+      margin-bottom: 5px;
+      background-color: var(--white);
+      border: 1px solid var(--border-color);
+    }
+
+    .account-item:hover {
+      background-color: #f0f4ff;
+    }
+
+    .account-checkbox {
+      margin-right: 10px;
+    }
+
+    .account-name {
+      flex-grow: 1;
+      font-weight: 500;
+    }
+
+    .account-actions {
+      display: flex;
+      gap: 5px;
+    }
+
+    .btn-icon {
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background-color: var(--light);
+      color: var(--dark);
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-icon:hover {
+      background-color: var(--danger);
+      color: var(--white);
+    }
+
+    .select-all {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      padding: 8px;
+      background-color: var(--white);
+      border-radius: var(--radius);
+      border: 1px solid var(--border-color);
+    }
+
+    .select-all label {
+      margin-left: 8px;
+      font-weight: 500;
+    }
+
+    .form-card {
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 10px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border-color);
+      font-size: 16px;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.2);
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 20px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--secondary);
+    }
+
+    .empty-state i {
+      font-size: 48px;
+      margin-bottom: 15px;
+      color: var(--border-color);
+    }
+
+    .empty-state p {
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+
+    /* Custom checkbox styling */
+    input[type="checkbox"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      border: 2px solid var(--primary);
+      outline: none;
+      cursor: pointer;
+      position: relative;
+    }
+
+    input[type="checkbox"]:checked {
+      background-color: var(--primary);
+    }
+
+    input[type="checkbox"]:checked::after {
+      content: '✓';
+      position: absolute;
+      color: white;
+      font-size: 14px;
+      top: -2px;
+      left: 3px;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .header-content {
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .nav-actions {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .server-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+
+      .server-info {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="header">
+    <div class="container header-content">
+      <div class="logo">
+        <i class="fas fa-users-gear"></i>
+        <span>Bulk Account Manager</span>
+      </div>
+      <div class="nav-actions">
+        <a href="/upload-csv" class="btn btn-success">
+          <i class="fas fa-file-csv"></i> Create Users (CSV)
+        </a>
+        <a href="/upload-excel" class="btn btn-success">
+          <i class="fas fa-file-excel"></i> Create Users (Excel)
+        </a>
+        <a href="/delete-csv" class="btn btn-danger">
+          <i class="fas fa-user-minus"></i> Delete Users (CSV)
+        </a>
+        <a href="/delete-excel" class="btn btn-danger">
+          <i class="fas fa-file-excel"></i> Delete Users (Excel)
+        </a>
+        <a href="/download-all-users" class="btn btn-info">
+          <i class="fas fa-download"></i> Download All Users
+        </a>
+        <a href="/software" class="btn btn-warning">
+          <i class="fas fa-box"></i> Install Software
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <section class="section">
+      <h2 class="section-title">
+        <i class="fas fa-server"></i> Add New Server
+      </h2>
+      <div class="card form-card">
+        <form method="POST" action="/add-ip">
+          <div class="form-group">
+            <label class="form-label" for="ip">Server IP Address</label>
+            <input type="text" id="ip" name="ip" class="form-control" placeholder="e.g. 192.168.1.100" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="root_username">Root Username</label>
+            <input type="text" id="root_username" name="root_username" class="form-control" placeholder="e.g. root"
+              required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="root_password">Root Password</label>
+            <input type="password" id="root_password" name="root_password" class="form-control"
+              placeholder="Enter root password" required>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-plus"></i> Add Server
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">
+        <i class="fas fa-network-wired"></i> Managed Servers
+      </h2>
+
+      {{if eq (len .) 0}}
+      <div class="empty-state">
+        <i class="fas fa-server"></i>
+        <p>No servers added yet. Add a server to get started.</p>
+        <a href="#" class="btn btn-primary" onclick="document.getElementById('ip').focus()">
+          <i class="fas fa-plus"></i> Add Your First Server
+        </a>
+      </div>
+      {{else}}
+
+      {{range $ip, $info := .}}
+      <div class="card server-card">
+        <div class="server-header">
+          <div class="server-title">
+            <i class="fas fa-server"></i>
+            <span>{{ $ip }}</span>
+          </div>
+          <div class="server-info">
+            <span>
+              <i class="fas fa-user-shield"></i> {{ $info.RootUsername }}
+            </span>
+            <span>
+              <i class="fas fa-users"></i> {{ len $info.Accounts }} accounts
+            </span>
+            <a href="/download-users?ip={{ $ip }}" class="btn btn-info btn-sm">
+              <i class="fas fa-download"></i> Download Users
+            </a>
+          </div>
+        </div>
+
+        <div class="account-container">
+          {{ if eq (len $info.Accounts) 0 }}
+          <div class="empty-state" style="padding: 20px;">
+            <p>No accounts created yet</p>
+          </div>
+          {{ else }}
+          <form method="POST" action="/delete-selected" id="delete-form-{{ $ip }}">
+            <input type="hidden" name="server_ip" value="{{ $ip }}">
+
+            <div class="delete-all-section"
+              style="margin-bottom: 15px; padding: 10px; background-color: #fff3cd; border: 1px solid #ffeaa7; border-radius: var(--radius);">
+              <button type="button" class="btn btn-danger" onclick="deleteAllUsers('{{ $ip }}')">
+                <i class="fas fa-trash-alt"></i> Delete All Users
+              </button>
+              <small style="margin-left: 10px; color: #856404;">⚠️ This will delete all users on this server</small>
+            </div>
+
+            <div class="account-list">
+              {{ range $index, $account := $info.Accounts }}
+              <div class="account-item">
+                <input type="checkbox" name="selected_users" value="{{ $account.Username }}"
+                  id="user-{{ $ip }}-{{ $index }}" class="account-checkbox">
+                <label for="user-{{ $ip }}-{{ $index }}" class="account-name">{{ $account.Username }}</label>
+                <div class="account-actions">
+                  <button type="button" class="btn-icon" onclick="deleteUser('{{ $ip }}', '{{ $account.Username }}')">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </div>
+              {{ end }}
+            </div>
+
+            <div style="margin-top: 15px;">
+              <button type="submit" class="btn btn-danger" onclick="return validateAndConfirmDeletion(this)">
+                <i class="fas fa-trash-alt"></i> Delete Selected
+              </button>
+            </div>
+          </form>
+          {{ end }}
+        </div>
+      </div>
+      {{ end }}
+
+      {{ end }}
+    </section>
+  </div>
+
+  <script>
+    // Function to delete a single user
+    function deleteUser(serverIP, username) {
+      if (confirm('Are you sure you want to delete ' + username + '?')) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/delete-user';
+
+        const serverInput = document.createElement('input');
+        serverInput.type = 'hidden';
+        serverInput.name = 'server_ip';
+        serverInput.value = serverIP;
+        form.appendChild(serverInput);
+
+        const usernameInput = document.createElement('input');
+        usernameInput.type = 'hidden';
+        usernameInput.name = 'username';
+        usernameInput.value = username;
+        form.appendChild(usernameInput);
+
+        document.body.appendChild(form);
+        form.submit();
+      }
+    }
+
+    // Function to validate and confirm deletion of selected users
+    function validateAndConfirmDeletion(button) {
+      const form = button.closest('form');
+      const checkedBoxes = form.querySelectorAll('input[name="selected_users"]:checked');
+      if (checkedBoxes.length === 0) {
+        alert('Please select at least one user to delete.');
+        return false;
+      }
+      const selectedUsers = Array.from(checkedBoxes).map(cb => cb.value);
+      return confirm('Are you sure you want to delete the following users?\n\n' + selectedUsers.join(', '));
+    }
+
+    // Function to delete all users on a server
+    function deleteAllUsers(serverIP) {
+      // Clean the server IP to handle any special characters
+      const cleanServerIP = serverIP.replace(/[^a-zA-Z0-9.-]/g, '');
+
+      // Get all user checkboxes for this server to show in confirmation
+      const userCheckboxes = document.querySelectorAll('input[name="selected_users"]');
+      const serverCheckboxes = [];
+
+      // Filter checkboxes that belong to this server's form
+      userCheckboxes.forEach(function (checkbox) {
+        const form = checkbox.closest('form');
+        if (form && form.querySelector('input[name="server_ip"][value="' + serverIP + '"]')) {
+          serverCheckboxes.push(checkbox);
+        }
+      });
+
+      if (serverCheckboxes.length === 0) {
+        alert('No users found on this server to delete.');
+        return;
+      }
+
+      // Get list of all usernames for confirmation
+      const allUsers = serverCheckboxes.map(cb => cb.value);
+
+      // Show confirmation dialog with all users
+      const confirmMessage = 'Are you sure you want to DELETE ALL ' + allUsers.length + ' users on server ' + serverIP + '?\n\n' +
+        'Users to be deleted:\n' + allUsers.join(', ') + '\n\n' +
+        '⚠️ THIS ACTION CANNOT BE UNDONE!';
+
+      if (confirm(confirmMessage)) {
+        // Create a form to submit to the delete-all endpoint
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/delete-all';
+
+        // Add server IP as hidden input
+        const serverInput = document.createElement('input');
+        serverInput.type = 'hidden';
+        serverInput.name = 'server_ip';
+        serverInput.value = serverIP;
+        form.appendChild(serverInput);
+
+        // Add form to body and submit
+        document.body.appendChild(form);
+        form.submit();
+      }
+    }
+
+    // Fix: Scoped "Select All" per server
+    document.addEventListener('DOMContentLoaded', function () {
+      document.querySelectorAll('.select-all-checkbox').forEach(function (checkbox) {
+        checkbox.addEventListener('change', function () {
+          const serverIP = this.id.replace('select-all-', '');
+          const form = document.querySelector(`#delete-form-${serverIP}`);
+          if (!form) return;
+          const checkboxes = form.querySelectorAll('input[name="selected_users"]');
+          checkboxes.forEach(cb => cb.checked = this.checked);
+        });
+      });
+    });
+  </script>
+
+</body>
+
+</html>

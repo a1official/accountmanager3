@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Software Installation - Bulk Account Manager</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    h1,
+    h2 {
+      color: #5bc0de;
+    }
+
+    form {
+      margin-bottom: 20px;
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 5px;
+    }
+
+    select,
+    input,
+    button {
+      margin: 5px 0;
+      padding: 8px;
+      width: 300px;
+    }
+
+    button {
+      background-color: #5bc0de;
+      color: white;
+      border: none;
+      cursor: pointer;
+      width: auto;
+    }
+
+    a {
+      color: #337ab7;
+      text-decoration: none;
+    }
+
+    .software-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 15px 0;
+    }
+
+    .software-item {
+      border: 1px solid #ddd;
+      padding: 10px;
+      border-radius: 5px;
+      width: 150px;
+      cursor: pointer;
+    }
+
+    .software-item:hover {
+      background-color: #f0f0f0;
+    }
+
+    .software-item.selected {
+      background-color: #d9edf7;
+      border-color: #5bc0de;
+    }
+
+    .software-name {
+      font-weight: bold;
+    }
+
+    .software-desc {
+      font-size: 0.8em;
+      color: #666;
+    }
+
+    .option-group {
+      margin: 15px 0;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+
+    .warning {
+      color: #d9534f;
+      font-weight: bold;
+      margin: 15px 0;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>📦 Software Installation</h1>
+
+  <div class="warning">⚠️ This feature installs software on remote servers. Make sure you have proper permissions.</div>
+
+  <form method="POST" action="/install-software">
+    <h2>Step 1: Select Server</h2>
+    <select name="server_ip" required>
+      <option value="">-- Select a server --</option>
+      {{ range $ip, $info := .Servers }}
+      <option value="{{ $ip }}">{{ $ip }} ({{ $info.RootUsername }})</option>
+      {{ end }}
+    </select>
+
+    <h2>Step 2: Select Software</h2>
+
+    <div class="option-group">
+      <input type="radio" id="common" name="software_type" value="common" checked>
+      <label for="common">Common Software</label>
+
+      <div class="software-list">
+        {{ range $index, $software := .Software }}
+        <div class="software-item" onclick="selectSoftware('{{ $software.Name }}')">
+          <div class="software-name">{{ $software.Name }}</div>
+          <div class="software-desc">{{ $software.Description }}</div>
+        </div>
+        {{ end }}
+      </div>
+
+      <select name="common_software" id="common_software" required>
+        <option value="">-- Select software --</option>
+        {{ range $index, $software := .Software }}
+        <option value="{{ $software.Name }}">{{ $software.Name }}</option>
+        {{ end }}
+      </select>
+    </div>
+
+    <div class="option-group">
+      <input type="radio" id="custom" name="software_type" value="custom">
+      <label for="custom">Custom Software</label>
+      <input type="text" name="custom_software" placeholder="Enter package name" disabled>
+    </div>
+
+    <button type="submit">Install Software</button>
+  </form>
+
+  <a href="/">← Back to Dashboard</a>
+
+  <script>
+    // Enable/disable inputs based on radio selection
+    document.querySelectorAll('input[name="software_type"]').forEach(radio => {
+      radio.addEventListener('change', function () {
+        const commonSelect = document.getElementById('common_software');
+        const customInput = document.querySelector('input[name="custom_software"]');
+
+        if (this.value === 'common') {
+          commonSelect.disabled = false;
+          customInput.disabled = true;
+        } else {
+          commonSelect.disabled = true;
+          customInput.disabled = false;
+        }
+      });
+    });
+
+    // Select software from the visual list
+    function selectSoftware(name) {
+      // Update the dropdown
+      document.getElementById('common_software').value = name;
+
+      // Update visual selection
+      document.querySelectorAll('.software-item').forEach(item => {
+        if (item.querySelector('.software-name').textContent === name) {
+          item.classList.add('selected');
+        } else {
+          item.classList.remove('selected');
+        }
+      });
+
+      // Ensure common radio is selected
+      document.getElementById('common').checked = true;
+      document.querySelector('input[name="custom_software"]').disabled = true;
+      document.getElementById('common_software').disabled = false;
+    }
+  </script>
+</body>
+
+</html>

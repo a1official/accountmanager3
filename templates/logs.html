@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Operation Logs - Bulk Account Manager</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    h1 { color: #337ab7; }
+    pre { 
+      background: #f8f9fa; 
+      padding: 15px; 
+      border-radius: 5px; 
+      white-space: pre-wrap;
+      max-height: 500px;
+      overflow-y: auto;
+      border: 1px solid #ddd;
+    }
+    .success { color: #5cb85c; }
+    .error { color: #d9534f; }
+    .warning { color: #f0ad4e; }
+    a { 
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 15px;
+      background-color: #337ab7;
+      color: white;
+      text-decoration: none;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body>
+  <h1>📜 Operation Logs</h1>
+  <pre>{{ . }}</pre>
+  <a href="/">← Back to Dashboard</a>
+</body>
+</html>

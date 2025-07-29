@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Delete Users</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    h2 { color: #d9534f; }
+    form { margin-bottom: 20px; }
+    select, input, button { margin: 5px 0; padding: 8px; }
+    button { background-color: #d9534f; color: white; border: none; cursor: pointer; }
+    a { color: #337ab7; text-decoration: none; }
+    .warning { color: #d9534f; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h2>🗑️ Delete Users via CSV Upload</h2>
+  <p class="warning">⚠️ Warning: This action will permanently delete users and their home directories!</p>
+  
+  <form method="POST" action="/delete-users" enctype="multipart/form-data">
+    <label>Select Server:</label>
+    <select name="server_ip" required>
+      {{ range $ip, $_ := . }}
+        <option value="{{ $ip }}">{{ $ip }}</option>
+      {{ end }}
+    </select><br>
+    
+    <label>Upload CSV with usernames to delete:</label><br>
+    <small>CSV should have a header row and usernames in the first column</small><br>
+    <input type="file" name="csvfile" accept=".csv" required><br>
+    
+    <button type="submit">Delete Users</button>
+  </form>
+  
+  <h3>CSV Format Example:</h3>
+  <pre>username
+user1
+user2
+user3</pre>
+
+  <a href="/">← Back to Dashboard</a>
+</body>
+</html>

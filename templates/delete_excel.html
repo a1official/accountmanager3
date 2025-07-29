@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Delete Users from Excel - Bulk Account Manager</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    :root {
+      --alienware-cyan: #00d4ff;
+      --alienware-purple: #9d00ff;
+      --alienware-green: #00ff88;
+      --alienware-red: #ff073a;
+      --alienware-orange: #ff6600;
+      --alienware-dark: #0a0a0a;
+      --alienware-darker: #050505;
+      --alienware-panel: #1a1a1a;
+      --alienware-border: #333333;
+      --alienware-text: #ffffff;
+      --alienware-text-dim: #cccccc;
+      --alienware-accent: #00d4ff;
+      --shadow-glow: 0 0 20px;
+      --shadow-strong: 0 0 40px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Orbitron', monospace;
+      background: var(--alienware-dark);
+      background-image: 
+        radial-gradient(circle at 20% 20%, rgba(0, 212, 255, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 80% 80%, rgba(157, 0, 255, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 50% 50%, rgba(0, 255, 136, 0.05) 0%, transparent 60%);
+      background-attachment: fixed;
+      color: var(--alienware-text);
+      line-height: 1.6;
+      padding: 0;
+      margin: 0;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        linear-gradient(45deg, transparent 49%, rgba(0, 212, 255, 0.02) 50%, transparent 51%),
+        linear-gradient(-45deg, transparent 49%, rgba(157, 0, 255, 0.02) 50%, transparent 51%);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: -1;
+      animation: grid-move 30s linear infinite;
+    }
+
+    @keyframes grid-move {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(40px, 40px); }
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .header {
+      background: linear-gradient(135deg, var(--alienware-panel) 0%, var(--alienware-darker) 100%);
+      backdrop-filter: blur(15px);
+      border-bottom: 3px solid var(--alienware-cyan);
+      box-shadow: 0 0 40px rgba(0, 212, 255, 0.3);
+      padding: 20px 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 100%, 20px 100%);
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      font-size: 28px;
+      font-weight: 900;
+      color: var(--alienware-cyan);
+      text-shadow: 0 0 15px var(--alienware-cyan);
+      animation: pulse-glow 3s ease-in-out infinite alternate;
+      font-family: 'Orbitron', monospace;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+    }
+
+    .logo i {
+      margin-right: 15px;
+      font-size: 32px;
+      filter: drop-shadow(0 0 10px var(--alienware-cyan));
+    }
+
+    @keyframes pulse-glow {
+      from { 
+        text-shadow: 0 0 15px var(--alienware-cyan);
+        filter: drop-shadow(0 0 10px var(--alienware-cyan));
+      }
+      to { 
+        text-shadow: 0 0 25px var(--alienware-cyan), 0 0 35px var(--alienware-cyan);
+        filter: drop-shadow(0 0 15px var(--alienware-cyan));
+      }
+    }
+
+    .section-title {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 30px;
+      color: var(--alienware-text);
+      display: flex;
+      align-items: center;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      text-shadow: 0 0 15px var(--alienware-cyan);
+      font-family: 'Orbitron', monospace;
+    }
+
+    .section-title i {
+      margin-right: 20px;
+      color: var(--alienware-cyan);
+      filter: drop-shadow(0 0 8px var(--alienware-cyan));
+      animation: rotate-pulse 4s ease-in-out infinite;
+    }
+
+    @keyframes rotate-pulse {
+      0%, 100% { transform: rotate(0deg) scale(1); }
+      50% { transform: rotate(10deg) scale(1.15); }
+    }
+
+    .card {
+      background: linear-gradient(135deg, var(--alienware-panel) 0%, var(--alienware-darker) 100%);
+      border: 2px solid var(--alienware-cyan);
+      border-radius: 0;
+      box-shadow: 0 0 30px rgba(0, 212, 255, 0.2);
+      padding: 30px;
+      margin-bottom: 30px;
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+      clip-path: polygon(15px 0%, 100% 0%, calc(100% - 15px) 100%, 0% 100%);
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(0, 212, 255, 0.05), rgba(157, 0, 255, 0.05));
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+    }
+
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 50px rgba(0, 212, 255, 0.4);
+      border-color: var(--alienware-purple);
+    }
+
+    .card:hover::before {
+      opacity: 1;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: 700;
+      color: var(--alienware-green);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-size: 13px;
+      text-shadow: 0 0 8px var(--alienware-green);
+      font-family: 'Orbitron', monospace;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 18px;
+      border-radius: 0;
+      border: 2px solid var(--alienware-green);
+      font-size: 16px;
+      background: linear-gradient(135deg, var(--alienware-panel), var(--alienware-darker));
+      color: var(--alienware-text);
+      transition: all 0.3s ease;
+      box-shadow: inset 0 0 15px rgba(0, 255, 136, 0.1);
+      clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+      font-family: 'Orbitron', monospace;
+    }
+
+    .form-control::placeholder {
+      color: var(--alienware-text-dim);
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--alienware-cyan);
+      box-shadow: 0 0 25px rgba(0, 212, 255, 0.4), inset 0 0 15px rgba(0, 212, 255, 0.1);
+      transform: translateY(-3px);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      padding: 12px 24px;
+      border-radius: 0;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 2px solid;
+      outline: none;
+      position: relative;
+      overflow: hidden;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-size: 11px;
+      font-family: 'Orbitron', monospace;
+      clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+      background: var(--alienware-panel);
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      transition: left 0.6s;
+    }
+
+    .btn:hover::before {
+      left: 100%;
+    }
+
+    .btn i {
+      margin-right: 10px;
+      filter: drop-shadow(0 0 5px currentColor);
+    }
+
+    .btn-primary {
+      border-color: var(--alienware-cyan);
+      color: var(--alienware-cyan);
+      box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+    }
+
+    .btn-primary:hover {
+      background: var(--alienware-cyan);
+      color: var(--alienware-dark);
+      box-shadow: 0 0 30px rgba(0, 212, 255, 0.6);
+      transform: translateY(-3px);
+    }
+
+    .btn-danger {
+      border-color: var(--alienware-red);
+      color: var(--alienware-red);
+      box-shadow: 0 0 20px rgba(255, 7, 58, 0.3);
+    }
+
+    .btn-danger:hover {
+      background: var(--alienware-red);
+      color: var(--alienware-text);
+      box-shadow: 0 0 30px rgba(255, 7, 58, 0.6);
+      transform: translateY(-3px);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+    }
+
+    .file-upload {
+      position: relative;
+      overflow: hidden;
+      margin-top: 10px;
+      width: 100%;
+    }
+
+    .file-upload input[type=file] {
+      position: absolute;
+      top: 0;
+      right: 0;
+      min-width: 100%;
+      min-height: 100%;
+      font-size: 100px;
+      text-align: right;
+      filter: alpha(opacity=0);
+      opacity: 0;
+      outline: none;
+      cursor: pointer;
+      display: block;
+    }
+
+    .file-upload-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 15px;
+      background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(157, 0, 255, 0.1));
+      border: 2px dashed var(--alienware-cyan);
+      color: var(--alienware-text);
+      font-family: 'Orbitron', monospace;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-size: 14px;
+      transition: all 0.3s;
+      cursor: pointer;
+      height: 100px;
+    }
+
+    .file-upload-label:hover {
+      background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(157, 0, 255, 0.2));
+      border-color: var(--alienware-green);
+      transform: translateY(-3px);
+    }
+
+    .file-upload-label i {
+      margin-right: 10px;
+      font-size: 24px;
+      color: var(--alienware-cyan);
+    }
+
+    .file-name {
+      margin-top: 10px;
+      font-size: 14px;
+      color: var(--alienware-green);
+      text-align: center;
+      font-family: 'Rajdhani', sans-serif;
+    }
+
+    .nav-actions {
+      display: flex;
+      gap: 15px;
+    }
+
+    .instructions {
+      margin-bottom: 20px;
+      padding: 15px;
+      background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 212, 255, 0.05));
+      border-left: 3px solid var(--alienware-green);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 16px;
+      color: var(--alienware-text-dim);
+    }
+
+    .instructions h3 {
+      color: var(--alienware-green);
+      margin-bottom: 10px;
+      font-family: 'Orbitron', monospace;
+      letter-spacing: 1px;
+    }
+
+    .instructions ul {
+      margin-left: 20px;
+      margin-top: 10px;
+    }
+
+    .instructions li {
+      margin-bottom: 5px;
+    }
+
+    .instructions code {
+      background: rgba(0, 0, 0, 0.3);
+      padding: 2px 5px;
+      border-radius: 3px;
+      font-family: monospace;
+      color: var(--alienware-cyan);
+    }
+
+    @media (max-width: 768px) {
+      .header-content {
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .nav-actions {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .form-actions {
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .btn {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="header">
+    <div class="container header-content">
+      <div class="logo">
+        <i class="fas fa-users-gear"></i>
+        <span>Bulk Account Manager</span>
+      </div>
+      <div class="nav-actions">
+        <a href="/" class="btn btn-primary">
+          <i class="fas fa-home"></i> Dashboard
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <section class="section">
+      <h2 class="section-title">
+        <i class="fas fa-user-minus"></i> Delete Users from Excel
+      </h2>
+
+      <div class="card">
+        <div class="instructions">
+          <h3>Instructions</h3>
+          <p>Upload an Excel file containing usernames to delete. The file should have:</p>
+          <ul>
+            <li>A header row (will be skipped)</li>
+            <li>Column A: Usernames to delete</li>
+          </ul>
+          <p>All users in the Excel file will be deleted from the selected server.</p>
+        </div>
+
+        <form action="/delete-users-excel" method="post" enctype="multipart/form-data">
+          <div class="form-group">
+            <label class="form-label" for="server_ip">Select Server</label>
+            <select name="server_ip" id="server_ip" class="form-control" required>
+              <option value="">-- Select Server --</option>
+              {{range $ip, $info := .}}
+              <option value="{{$ip}}">{{$ip}} ({{$info.RootUsername}} - {{len $info.Accounts}} accounts)</option>
+              {{end}}
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="excelfile">Upload Excel File</label>
+            <div class="file-upload">
+              <label for="excelfile" class="file-upload-label">
+                <i class="fas fa-file-excel"></i>
+                <span>Choose Excel File or Drop Here</span>
+              </label>
+              <input type="file" name="excelfile" id="excelfile" accept=".xlsx,.xls" required>
+            </div>
+            <div class="file-name" id="file-name"></div>
+          </div>
+
+          <div class="form-actions">
+            <a href="/" class="btn btn-primary">
+              <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+            <button type="submit" class="btn btn-danger">
+              <i class="fas fa-user-minus"></i> Delete Users
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    document.getElementById('excelfile').addEventListener('change', function(e) {
+      var fileName = e.target.files[0] ? e.target.files[0].name : 'No file selected';
+      document.getElementById('file-name').textContent = fileName;
+    });
+  </script>
+</body>
+
+</html>

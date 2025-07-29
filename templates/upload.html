@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Create Users - Bulk Account Manager</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    h1, h2 { color: #5cb85c; }
+    form { margin-bottom: 20px; background: #f8f9fa; padding: 15px; border-radius: 5px; }
+    select, input, button { margin: 5px 0; padding: 8px; width: 300px; }
+    button { background-color: #5cb85c; color: white; border: none; cursor: pointer; width: auto; }
+    a { color: #337ab7; text-decoration: none; }
+    pre { background: #f8f9fa; padding: 10px; border-radius: 5px; }
+  </style>
+</head>
+<body>
+  <h1>📤 Create User Accounts</h1>
+  
+  <form method="POST" action="/create-users" enctype="multipart/form-data">
+    <label>Select Server:</label>
+    <select name="server_ip" required>
+      {{ range $ip, $info := . }}
+        <option value="{{ $ip }}">{{ $ip }} ({{ $info.RootUsername }})</option>
+      {{ end }}
+    </select><br>
+
+    <label>Upload CSV with user details:</label><br>
+    <small>CSV should have headers: username,password</small><br>
+    <input type="file" name="csvfile" accept=".csv" required><br>
+    
+    <button type="submit">Create Users</button>
+  </form>
+  
+  <h3>CSV Format Example:</h3>
+  <pre>username,password
+user1,pass123
+user2,pass456
+user3,pass789</pre>
+
+  <a href="/">← Back to Dashboard</a>
+</body>
+</html>
